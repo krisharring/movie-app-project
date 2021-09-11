@@ -28,7 +28,23 @@ let topMovies = [
     {
         title: 'Movie Six',
         actor: 'Actor Six',
-    }
+    },
+    {
+        title: 'Movie Seven',
+        actor: 'Actor Seven',
+    },
+    {
+        title: 'Movie Eight',
+        actor: 'Actor Eight',
+    },
+    {
+        title: 'Movie Nine',
+        actor: 'Actor Nine',
+    },
+    {
+        title: 'Movie Ten',
+        actor: 'Actor Ten',
+    },
 ];
 
 // GET requests
@@ -50,25 +66,25 @@ app.listen(8080, () =>{
 });
 
 
-app.get('/secreturl', (req, res) =>{
-    res.send('This is a secret URL')
-});
+// app.get('/secreturl', (req, res) =>{
+//     res.send('This is a secret URL')
+// });
 
-// error handling
-const bodyParser = require('body-parser'),
-    methodOverride = require('method-override');
+// // error handling
+// const bodyParser = require('body-parser'),
+//     methodOverride = require('method-override');
 
-app.use(bodyParser.urlencoded({
-    extended: true
-}));
+// app.use(bodyParser.urlencoded({
+//     extended: true
+// }));
 
-app.use(bodyParser.json());
-app.use(methodOverride());
+// app.use(bodyParser.json());
+// app.use(methodOverride());
 
-app.use((err, req, res, next) => {
-    console.error(err,stack);
-    res.status(500).send('Something Broke');
-});
+// app.use((err, req, res, next) => {
+//     console.error(err,stack);
+//     res.status(500).send('Something Broke');
+// });
 
 
 
