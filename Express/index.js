@@ -5,6 +5,55 @@ const express = require('express');
 
 const app = express();
 
+let topMovies = [
+    {
+        title: 'Movie One',
+        actor: 'Actor One',
+    },
+    {
+        title: 'Movie Two',
+        actor: 'Actor Two',
+    }, {
+        title: 'Movie Three',
+        actor: 'Actor Three',
+    },
+    {
+        title: 'Movie Four',
+        actor: 'Actor Four',
+    },
+    {
+        title: 'Movie Five',
+        actor: 'Actor Five',
+    },
+    {
+        title: 'Movie Six',
+        actor: 'Actor Six',
+    }
+];
+
+// GET requests
+app.get('/', (req, res) => {
+    res.send('Welcome to My Movie App')
+});
+
+app.get('/documentation', (req, res) => {
+    res.sendFile('public.documentation.html', {root: _dirname});
+});
+
+app.get('/movies', (req, res) => {
+    res.json(topMovies);
+});
+
+// Listen to requests
+app.listen(8080, () =>{
+    console.log('Your app is listening to post 8080')
+});
+
+
+app.get('/secreturl', (req, res) =>{
+    res.send('This is a secret URL')
+});
+
 // error handling
 const bodyParser = require('body-parser'),
     methodOverride = require('method-override');
@@ -23,20 +72,9 @@ app.use((err, req, res, next) => {
 
 
 
-// GET requests
-app.get('/', (req, res) => {
-    res.send('Welcome to My Movie App')
-});
 
-app.get('/secreturl', (req, res) =>{
-    res.send('This is a secret URL')
-});
 
 
 // Middleware function orders
 //Logging, User Authentification, App Routing
 
-// Listen to requests
-app.listen(8080, () =>{
-    console.log('Your app is listening to post 8080')
-});
