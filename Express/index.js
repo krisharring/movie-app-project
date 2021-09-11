@@ -1,9 +1,16 @@
 const express = require('express');
     morgan = require('morgan');
+    app = express(),
+    // error handling
+    bodyParser = require('body-parser');
 
+    // Logging Middleware
     app.use(morgan('common'));
-
-const app = express();
+    // Static Files
+    app.use(express.static('public'));
+    // Using Body-Parser
+    app.use(bodyParser.json());
+    app.use(bodyParser.urlencoded({entended: true}));
 
 let topMovies = [
     {
@@ -47,6 +54,10 @@ let topMovies = [
     },
 ];
 
+app.use(bodyParser.json());
+app.use(morgan('common'));
+app.use(methodOverride());
+
 // GET requests
 app.get('/', (req, res) => {
     res.send('Welcome to My Movie App')
@@ -60,37 +71,18 @@ app.get('/movies', (req, res) => {
     res.json(topMovies);
 });
 
+
+app.get('/secreturl', (req, res) =>{
+    res.send('This is a secret URL')
+});
+
+// Error Handler
+app.use((err, req, res, next) => {
+    console.error(err,stack);
+    res.status(500).send('Something Broke');
+});
+
 // Listen to requests
 app.listen(8080, () =>{
     console.log('Your app is listening to post 8080')
 });
-
-
-// app.get('/secreturl', (req, res) =>{
-//     res.send('This is a secret URL')
-// });
-
-// // error handling
-// const bodyParser = require('body-parser'),
-//     methodOverride = require('method-override');
-
-// app.use(bodyParser.urlencoded({
-//     extended: true
-// }));
-
-// app.use(bodyParser.json());
-// app.use(methodOverride());
-
-// app.use((err, req, res, next) => {
-//     console.error(err,stack);
-//     res.status(500).send('Something Broke');
-// });
-
-
-
-
-
-
-// Middleware function orders
-//Logging, User Authentification, App Routing
-
