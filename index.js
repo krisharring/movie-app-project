@@ -1,16 +1,20 @@
 const express = require('express');
-    morgan = require('morgan');
-    app = express(),
-    // error handling
-    bodyParser = require('body-parser');
+const app = express();
+    // morgan = require('morgan');
+
+    // error handling - body parser depreceated
+    // bodyParser = require('body-parser');
 
     // Logging Middleware
     app.use(morgan('common'));
     // Static Files
     app.use(express.static('public'));
-    // Using Body-Parser
-    app.use(bodyParser.json());
-    app.use(bodyParser.urlencoded({entended: true}));
+    // Using Body-Parser(now depreceated)
+    app.use(express.json());
+    app.use(express.urlencoded({entended: true}));
+
+let express = require('express');
+let app = express();
 
 let topMovies = [
     {
@@ -54,33 +58,32 @@ let topMovies = [
     },
 ];
 
-app.use(bodyParser.json());
-app.use(morgan('common'));
-app.use(methodOverride());
+// app.use(bodyParser.json());
+// app.use(morgan('common'));
+// app.use(methodOverride());
 
 // GET requests
-app.get('/', (req, res) => {
+app.get('/', function(req, res) {
     res.send('Welcome to My Movie App')
 });
 
-app.get('/documentation', (req, res) => {
-    res.sendFile('public.documentation.html', {root: _dirname});
+app.get('/documentation/', function(req, res) {
+    res.sendFile('public/documentation.html', {root: _dirname});
 });
 
-app.get('/movies', (req, res) => {
+app.get('/movies', function(req, res) {
     res.json(topMovies);
 });
 
-
 app.get('/secreturl', (req, res) =>{
-    res.send('This is a secret URL')
+    res.send('This is a secret URL');
 });
 
 // Error Handler
-app.use((err, req, res, next) => {
-    console.error(err,stack);
-    res.status(500).send('Something Broke');
-});
+// app.use((err, req, res, next) => {
+//     console.error(err,stack);
+//     res.status(500).send('Something Broke');
+// });
 
 // Listen to requests
 app.listen(8080, () =>{
