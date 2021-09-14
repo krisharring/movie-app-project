@@ -37,8 +37,8 @@ app.post('/users', (req, res) => {
     res.send('Successful POST request containing data about about the user being added');
 });
 
-app.post('/users/:Name', (req, res) => {
-    res.send('Successful POST holding data about the user being added');
+app.put('/users/:Name', (req, res) => {
+    res.send('Successful PUT request adding data about the user being added');
 })
 
 app.post('/users/:Name/Movies/:MovieID', (req, res) => {
