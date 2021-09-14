@@ -18,7 +18,39 @@ app.get('/documentation', (req, res) => {
 });
 
 app.get('/movies', function(req, res) {
-    res.json(topMovies);
+    res.send('Successful GET request returning data of all Movies');
+});
+
+app.get('/movies/:Title', (req, res) => {
+    res.send( 'Success GET request containing an ID, title,genre, director property');
+});
+
+app.get('/movies/:Title/Genre', (req, res) => {
+    res.send('Successful GET request containing data about a genre(description) by name/title');
+});
+
+app.get('/movies/:Title/Director', (req, res) => {
+    res.send('Successful GET request containing data about a director(bio, birth year, death year) by name');
+});
+
+app.post('/users', (req, res) => {
+    res.send('Successful POST request containing data about about the user being added');
+});
+
+app.post('/users/:Name', (req, res) => {
+    res.send('Successful POST holding data about the user being added');
+})
+
+app.post('/users/:Name/Movies/:MovieID', (req, res) => {
+    res.send('Successful Post result allowing new users to add a movie to their list of favorites');
+});
+
+app.delete('/users/:Name/movies/:MovieID', (req, res) => {
+    res.send('Successful Delete request allowing users to remove a movie from their list of favorites');
+});
+
+app.delete('/users/:UserID', (req, res) => {
+    res.send('Successful Delete request allowing users to delete their profile');
 });
 
 app.get('/secreturl', (req, res) =>{
@@ -34,7 +66,7 @@ app.get('/secreturl', (req, res) =>{
     
 // app.use(methodOverride());
 
-let topMovies = [
+let Movies = [
     {
         title: 'Movie One',
         actor: 'Actor One',

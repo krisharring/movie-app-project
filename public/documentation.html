@@ -23,6 +23,8 @@
             will be accessed via commonly used HTTP methods like GET and POST. Similar methods
             (CRUD) will be used to retrieve data from your database and store that data in a non-relational
             way.
+        <br>
+        <br>
             ● When—Whenever users of myFlix are interacting with the application, the server-side of the
             application will be in use, processing their requests and performing operations against the
             data in the database. These users will be able to use the myFlix application whenever they like
@@ -37,5 +39,132 @@
             stored.
         </p>
         <script type="module" src=" "></script>
+        <p>LIST OF URL ENDPOINTS
+            <br>
+            <b>Return a list of ALL movies to the user</b>
+            <br>
+            /movies
+            <br>
+            GET
+            <br>
+            A JSON object holding data about all the movies
+        </p>
+
+        <p>
+            <br>
+            <b>Return data(description, genre, director, image URL, whether it's featured or not) about a single movie by title to the user
+            </b>
+            <br>
+            /movies/:Title
+            <br>
+            GET
+            <br>
+            A JSON object holding data about a single movie, containing an ID, title,genre, director property.
+                {
+                Id: 1,
+                Title: “Love Jones”,
+                Description: {
+                Genre: TBD,
+                Director: TBD,
+                Image URL:      TBD,
+                Featured: Y/N
+                }
+                }
+        </p>
+
+        <p>
+            <br>
+            <b>Return data about a genre(description) by name/title
+            </b>
+            <br>
+            /movies/:Title/Genre
+            <br>
+            GET
+            <br>
+            A JSON object holding data about a genre
+        </p>
+
+        <p>
+            <br>
+            <b>Return data about a director(bio, birth year, death year) by name
+            </b>
+            <br>
+            /movies/:Title/Director
+            <br>
+            GET
+            <br>
+            A JSON object holding data about the director
+        </p>
+
+        <p>
+            <br>
+            <b>Allow new users</b>
+            <br>
+            /users
+            <br>
+            POST
+            <br>
+            A JSON object holding data about the user being added
+            Example:<br>
+            {<br>
+                Name: "user1", <br>
+                Password: user123", <br>
+                Email: "useremail@gmail.com", <br>
+            }
+        </p>
+
+        <p>
+            <br>
+            <b>Allow users to update their user info(username)</b>
+            <br>
+            /users/:Name
+            <br>
+            POST
+            <br>
+            A JSON object holding data about the user being added
+            Example:<br>
+            {<br>
+                Name: "user1", <br>
+                Password: user123", <br>
+                Email: "useremail@gmail.com", <br>
+                MovieList: [], <br>
+            }
+        </p>
+
+        <p>
+            <br>
+            <b>Allow users to add a movie to their list of favorites(showing only a text that a movie has been added</b>
+            <br>
+            /users/:Name/Movies/:MovieID
+            <br>
+            POST
+            <br>
+            A JSON file with MovieID as the value of MovieList<br>
+        </p>
+
+        <p>
+            <br>
+            <b>Allow users to remove a movie from their list of favorites(showing only a test that a movie has been removed
+            </b>
+            <br>
+            /users/:Name/movies/:MovieID
+            <br>
+            DELETE
+            <br>
+            A text message indicating the movie was successfully removed
+        </p>
+
+        <p>
+            <br>
+            <b>Allow existing users to deregister(showing only a test that a user email has been removed
+            </b>
+            <br>
+            /users/:UserID
+            <br>
+            DELETE
+            <br>
+            A text message indicating the user was successfully removed
+        </p>
+
     </body>
 </html>
