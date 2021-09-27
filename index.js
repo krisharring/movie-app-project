@@ -2,6 +2,15 @@ const express = require('express');
 
 const app = express(); 
 
+const mongoose = require('mongoose');
+const Models = require('./models.js');
+
+const Movies = Models.Movie;
+const Users = Models.User;
+
+mongoose.connect('mongodb://localhost:27017/[LGBTQMovieApp]', { useNewUrlParser: true,
+useUnifiedTopology: true});
+
 
 // // error handling - body parser depreceated
 bodyParser = require('body-parser');
