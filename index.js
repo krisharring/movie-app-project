@@ -1,55 +1,92 @@
 const express = require('express');
-
-const app = express(); 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: true}));
-
-const mongoose = require('mongoose');
-const Models = require('./models.js');
+    morgan = require('morgan'),
+    bodyParser = require('body parser'),
+    uuid = require('uuid'),
+    mongoose = require('mongoose'),
+    models = require('./models.js');
 
 const Movies = Models.Movie;
 const Users = Models.User;
+const Directors = Models.Director;
+const Genre = Models.Genre;
 
-// // error handling - body parser depreceated
-bodyParser = require('body-parser');
-const morgan = require('morgan');
+mongoose.connect('mongodb://localhost:27017/[LGBTQMovieApp]', { 
+useNewUrlParser: true,
+useUnifiedTopology: true,
+});
 
-mongoose.connect('mongodb://localhost:27017/[LGBTQMovieApp]', { useNewUrlParser: true,
-useUnifiedTopology: true});
+const app = express(); 
 
-//mongoose Querying functions
-// mongoose.model.deleteMany()
-// mongoose.model.deleteOne()
-// mongoose.model.find()
-// mongoose.model.findById()
-// mongoose.model.findByIdAndDelete()
-// mongoose.model.findByIdAndRemove()
-// mongoose.model.findByIdandUpdate()
-// mongoose.model.findOne()
-// mongoose.model.findOneAndDelete()
-// mongoose.model.fineOneAndRemove()
-// mongoose.model.findOneAndUpdate()
-// mongoose.model.replaceOne()
-// mongoose.model.updateMany()
-// mongoose.model.updateOne()
+// Logging Middleware
+app.use(morgan('common'));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: true}));
 
+// Static Files
+app.use(express.static('public'));
 
-// // GET requests
+// GET requests
+// Get All Movies
+app.get('/movies', (req, res) => {
+    Movies.find()
+        .then(movies => {
+            res.status(201).json(movies);
+        })
+        .catch(err => {
+            console.error(err);
+            res.status(500).send('Error: ' + err);
+        });
+    }
+);
 
-app.get('/', (req, res)=> {
+app.get('/', (req, res) => {
     res.send('Welcome to My Movie App')
 });
 
-app.get('/documentation', (req, res) => {
-    res.sendFile('public/documentation.html', {root: _dirname});
+// Add a new movie
+app.post('/movies', (req, res) => {
+    console.log('body: ', req.body);
+    Movies.findOne({ Title: req.body.Title })
+        .then(movie => {
+            if (movie) {
+                return res.status(400).send(req.body.Title + 'already exists');
+            } else {
+                Movies.create({
+                    Title: req.body.Title,
+                    Description: req.body.Description,
+                    Genre: {
+                        Name: req.body.Genre.Name
+                    },
+                    Director: {
+                        Name: req.body.Director.Name,
+                        Bio: req.body.Director.Bio
+                    },
+                    Actors: req.body.Actors,
+                    ImagePath: req.body.ImagePath
+                })
+                .then(movie => {
+                    res.status(201).json(movie);
+                })
+                .catch(error => {
+                    console.error(error);
+                    res.status(500).send('Error: ' + err);
+                });
+            }
+            })
+        .catch(error => {
+            console.error(error);
+            res.status(500).send('Error: ' + err);
+        });
 });
 
-app.get('/movies', function(req, res) {
-    res.send('Successful GET request returning data of all Movies');
-});
-
+// Get a Movie by Title
 app.get('/movies/:Title', (req, res) => {
     res.send( 'Success GET request containing an ID, title,genre, director property');
+});
+
+
+app.get('/documentation', (req, res) => {
+    res.sendFile('public/documentation.html', {root: _dirname});
 });
 
 app.get('/movies/:Title/Genre', (req, res) => {
@@ -184,32 +221,27 @@ app.delete('/users/:Username', (req, res) => {
         });
 });
 
-app.put('/users/:Name', (req, res) => {
-    res.send('Successful PUT request adding data about the user being added');
-})
+// app.put('/users/:Name', (req, res) => {
+//     res.send('Successful PUT request adding data about the user being added');
+// })
 
-app.post('/users/:Name/Movies/:MovieID', (req, res) => {
-    res.send('Successful Post result allowing new users to add a movie to their list of favorites');
-});
+// app.post('/users/:Name/Movies/:MovieID', (req, res) => {
+//     res.send('Successful Post result allowing new users to add a movie to their list of favorites');
+// });
 
-app.delete('/users/:Name/movies/:MovieID', (req, res) => {
-    res.send('Successful Delete request allowing users to remove a movie from their list of favorites');
-});
+// app.delete('/users/:Name/movies/:MovieID', (req, res) => {
+//     res.send('Successful Delete request allowing users to remove a movie from their list of favorites');
+// });
 
-app.delete('/users/:UserID', (req, res) => {
-    res.send('Successful Delete request allowing users to delete their profile');
-});
+// app.delete('/users/:UserID', (req, res) => {
+//     res.send('Successful Delete request allowing users to delete their profile');
+// });
 
-app.get('/secreturl', (req, res) =>{
-    res.send('This is a secret URL');
-});
+// app.get('/secreturl', (req, res) =>{
+//     res.send('This is a secret URL');
+// });
 
-    // Logging Middleware
-    app.use(express.json());
-    app.use(express.urlencoded({entended: true}));
-    app.use(morgan('common'));
-    // Static Files
-    app.use(express.static('public'));
+
     
 // app.use(methodOverride());
 
@@ -266,3 +298,19 @@ app.use((err, req, res, next) => {
 app.listen(8080, function(req, res){
     console.log('Movie App is Running on Port 8080...')
 })
+
+// mongoose Querying functions
+// mongoose.model.deleteMany()
+// mongoose.model.deleteOne()
+// mongoose.model.find()
+// mongoose.model.findById()
+// mongoose.model.findByIdAndDelete()
+// mongoose.model.findByIdAndRemove()
+// mongoose.model.findByIdandUpdate()
+// mongoose.model.findOne()
+// mongoose.model.findOneAndDelete()
+// mongoose.model.fineOneAndRemove()
+// mongoose.model.findOneAndUpdate()
+// mongoose.model.replaceOne()
+// mongoose.model.updateMany()
+// mongoose.model.updateOne()
