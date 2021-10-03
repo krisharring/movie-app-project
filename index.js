@@ -17,13 +17,62 @@ useUnifiedTopology: true,
 
 const app = express(); 
 
+let myLogger = (req, res, next) => {
+    console.log(req.url);
+    next();
+};
+
 // Logging Middleware
+app.use(myLogger);
 app.use(morgan('common'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
 // Static Files
 app.use(express.static('public'));
+
+// let Movies = [
+//     {
+//         title: 'Movie One',
+//         actor: 'Actor One',
+//     },
+//     {
+//         title: 'Movie Two',
+//         actor: 'Actor Two',
+//     }, {
+//         title: 'Movie Three',
+//         actor: 'Actor Three',
+//     },
+//     {
+//         title: 'Movie Four',
+//         actor: 'Actor Four',
+//     },
+//     {
+//         title: 'Movie Five',
+//         actor: 'Actor Five',
+//     },
+//     {
+//         title: 'Movie Six',
+//         actor: 'Actor Six',
+//     },
+//     {
+//         title: 'Movie Seven',
+//         actor: 'Actor Seven',
+//     },
+//     {
+//         title: 'Movie Eight',
+//         actor: 'Actor Eight',
+//     },
+//     {
+//         title: 'Movie Nine',
+//         actor: 'Actor Nine',
+//     },
+//     {
+//         title: 'Movie Ten',
+//         actor: 'Actor Ten',
+//     },
+// ];
+
 
 // GET requests
 // Get All Movies
@@ -245,47 +294,6 @@ app.delete('/users/:Username', (req, res) => {
     
 // app.use(methodOverride());
 
-let Movies = [
-    {
-        title: 'Movie One',
-        actor: 'Actor One',
-    },
-    {
-        title: 'Movie Two',
-        actor: 'Actor Two',
-    }, {
-        title: 'Movie Three',
-        actor: 'Actor Three',
-    },
-    {
-        title: 'Movie Four',
-        actor: 'Actor Four',
-    },
-    {
-        title: 'Movie Five',
-        actor: 'Actor Five',
-    },
-    {
-        title: 'Movie Six',
-        actor: 'Actor Six',
-    },
-    {
-        title: 'Movie Seven',
-        actor: 'Actor Seven',
-    },
-    {
-        title: 'Movie Eight',
-        actor: 'Actor Eight',
-    },
-    {
-        title: 'Movie Nine',
-        actor: 'Actor Nine',
-    },
-    {
-        title: 'Movie Ten',
-        actor: 'Actor Ten',
-    },
-];
 
 
 // Error Handler
