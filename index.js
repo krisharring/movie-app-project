@@ -1,9 +1,12 @@
+// required Modules
 const express = require('express');
-    morgan = require('morgan'),
-    bodyParser = require('body parser'),
-    uuid = require('uuid'),
-    mongoose = require('mongoose'),
-    models = require('./models.js');
+const morgan = require('morgan');
+const bodyParser = require('body parser');
+const uuid = require('uuid'),
+
+// importing Models
+const mongoose = require('mongoose');
+const Models = require('./models.js');
 
 const Movies = Models.Movie;
 const Users = Models.User;
@@ -15,67 +18,29 @@ useNewUrlParser: true,
 useUnifiedTopology: true,
 });
 
+// express
 const app = express(); 
 
-let myLogger = (req, res, next) => {
-    console.log(req.url);
-    next();
-};
-
-// Logging Middleware
-app.use(myLogger);
+// morgan
 app.use(morgan('common'));
+
+// body-parser
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
-// Static Files
-app.use(express.static('public'));
-
-// let Movies = [
-//     {
-//         title: 'Movie One',
-//         actor: 'Actor One',
-//     },
-//     {
-//         title: 'Movie Two',
-//         actor: 'Actor Two',
-//     }, {
-//         title: 'Movie Three',
-//         actor: 'Actor Three',
-//     },
-//     {
-//         title: 'Movie Four',
-//         actor: 'Actor Four',
-//     },
-//     {
-//         title: 'Movie Five',
-//         actor: 'Actor Five',
-//     },
-//     {
-//         title: 'Movie Six',
-//         actor: 'Actor Six',
-//     },
-//     {
-//         title: 'Movie Seven',
-//         actor: 'Actor Seven',
-//     },
-//     {
-//         title: 'Movie Eight',
-//         actor: 'Actor Eight',
-//     },
-//     {
-//         title: 'Movie Nine',
-//         actor: 'Actor Nine',
-//     },
-//     {
-//         title: 'Movie Ten',
-//         actor: 'Actor Ten',
-//     },
-// ];
+// passport for authentication
+let auth = require('./auth')(app);
+const passport = require('passport');
+require('./passport');
 
 
 // GET requests
-// Get All Movies
+// welcome page
+app.get('/', (req, res) => {
+    res.send('Welcome to My Movie App')
+});
+
+// get all movies
 app.get('/movies', (req, res) => {
     Movies.find()
         .then(movies => {
@@ -88,65 +53,43 @@ app.get('/movies', (req, res) => {
     }
 );
 
-app.get('/', (req, res) => {
-    res.send('Welcome to My Movie App')
+// get a movie by title
+app.get('/movies/:Title', passport.authenticate('jwt', {session:false}), (req, res) => {
+    Movies.findOne({Title: req.params.Title})
+    .then((movie) => {
+        res.json(movie);
+    })
+    .catch((err) => {
+        console.error(err);
+        res.status(500).send('Error: ' + err);
+    });
 });
 
-// Add a new movie
-app.post('/movies', (req, res) => {
-    console.log('body: ', req.body);
-    Movies.findOne({ Title: req.body.Title })
-        .then(movie => {
-            if (movie) {
-                return res.status(400).send(req.body.Title + 'already exists');
-            } else {
-                Movies.create({
-                    Title: req.body.Title,
-                    Description: req.body.Description,
-                    Genre: {
-                        Name: req.body.Genre.Name
-                    },
-                    Director: {
-                        Name: req.body.Director.Name,
-                        Bio: req.body.Director.Bio
-                    },
-                    Actors: req.body.Actors,
-                    ImagePath: req.body.ImagePath
-                })
-                .then(movie => {
-                    res.status(201).json(movie);
-                })
-                .catch(error => {
-                    console.error(error);
-                    res.status(500).send('Error: ' + err);
-                });
-            }
-            })
-        .catch(error => {
-            console.error(error);
-            res.status(500).send('Error: ' + err);
-        });
+// get a list of all genres
+app.get('/genres', passport.authenticate('jwt', {session:false}), (req, res) => {
+    Genre.find()
+    .then((genres) => {
+        res.status(201).json(genres);
+    })
+    .catch((err) => {
+        console.error(err);
+        res.status(500).send('Error ' + err);
+    });
 });
 
-// Get a Movie by Title
-app.get('/movies/:Title', (req, res) => {
-    res.send( 'Success GET request containing an ID, title,genre, director property');
+// gets the description of all movie directors
+app.get('/directors/:Name', passport.authenticate('jwt', {session:fale}), (req, res) => {
+    Directors.findOne({Name: req.params.Name})
+    .then((director) => {
+        res.json(director);
+    })
+    .catch((err) => {
+        console.error(err);
+        res.status(500).send('Error: ' + err);
+    });
 });
 
-
-app.get('/documentation', (req, res) => {
-    res.sendFile('public/documentation.html', {root: _dirname});
-});
-
-app.get('/movies/:Title/Genre', (req, res) => {
-    res.send('Successful GET request containing data about a genre(description) by name/title');
-});
-
-app.get('/movies/:Title/Director', (req, res) => {
-    res.send('Successful GET request containing data about a director(bio, birth year, death year) by name');
-});
-
-// Get all Users
+// get all users
 app.get('/users', (req, res) => {
     Users.find()
         .then((users) => {
@@ -158,31 +101,7 @@ app.get('/users', (req, res) => {
         });
 });
 
-// Get a User by Username
-app.get('/users/:Username', (req, res) => {
-    Users.findOne({ Username: req.params.Username })
-    .then((user) => {
-        res.json(user);
-    })
-    .catch((err) => {
-        console.error(err);
-        res.status(500).send('Error: ' + err);
-    });
-});
-
-// app.post('/users', (req, res) => {
-//     res.send('Successful POST request containing data about about the user being added');
-// });
-
-// Add a user
-/*We'll expect JSON in this format
-{
-    ID: integer,
-    Username: String,
-    Password: String,
-    Email: String,
-    Birthday: Date
-}*/
+// allow new users to register
 app.post('/users', (req, res) => {
     Users.findOne({ Username: req.body.Username})
         .then((user) => {
@@ -209,14 +128,23 @@ app.post('/users', (req, res) => {
         });
 });
 
-// Update a user's info, by username
-/* We'll expect JSON in this format
-{
-    Username: String, (required)
-    Password: String, (required)
-    Email: String, (required)
-    Birthday: String, (required)
-} */
+// get a user by username
+app.get('/users/:Username', (req, res) => {
+    Users.findOne({ Username: req.params.Username })
+    .then((user) => {
+        res.json(user);
+    })
+    .catch((err) => {
+        console.error(err);
+        res.status(500).send('Error: ' + err);
+    });
+});
+
+app.get('/documentation', (req, res) => {
+    res.sendFile('public/documentation.html', {root: _dirname});
+});
+
+// update a user by username
 app.put('/users/:Username', (req, res) => {
     Users.findOneAndUpdate({Username: req.params.Username }, 
     { $set: 
@@ -238,7 +166,7 @@ app.put('/users/:Username', (req, res) => {
     });
 });
 
-// Add a movie to a user's list of favorites
+// Allow a  user to add a movie to their favorite list
 app.post('/users/:Username/movies/:MovieID', (req, res) => {
     Users.findOneAndUpdate({ Username: req.params.Username }, {
         $push: { FavoriteMovies: req.params.MovieID }
@@ -254,7 +182,23 @@ app.post('/users/:Username/movies/:MovieID', (req, res) => {
     });
 });
 
-//  Delete a user by username
+// allow users to remove movies from favorite list
+app.delete('/users/:Username/movies/:MovieID', (req, res) => {
+    Users.findOneAndUpdate({ Username: req.params.Username }, {
+        $pull: { FavoriteMovies: req.params.MovieID }
+    },
+    { new: true}, // This line makes sure that the updated document is returned
+    (err, updateUSer) => {
+        if (err) {
+            console.error(err);
+            res.status(500).send('Error: ' + err);
+        } else {
+            res.json(updatedUser);
+        }
+    });
+});
+
+//  delete a user by username
 app.delete('/users/:Username', (req, res) => {
     Users.findOneandRemove({ Username: req.params.Username })
         .then((user) => {
@@ -269,34 +213,12 @@ app.delete('/users/:Username', (req, res) => {
             res.status(500).send('Error: ' + err);
         });
 });
-
-// app.put('/users/:Name', (req, res) => {
-//     res.send('Successful PUT request adding data about the user being added');
-// })
-
-// app.post('/users/:Name/Movies/:MovieID', (req, res) => {
-//     res.send('Successful Post result allowing new users to add a movie to their list of favorites');
-// });
-
-// app.delete('/users/:Name/movies/:MovieID', (req, res) => {
-//     res.send('Successful Delete request allowing users to remove a movie from their list of favorites');
-// });
-
-// app.delete('/users/:UserID', (req, res) => {
-//     res.send('Successful Delete request allowing users to delete their profile');
-// });
-
-// app.get('/secreturl', (req, res) =>{
-//     res.send('This is a secret URL');
-// });
-
-
     
-// app.use(methodOverride());
+// exposing files in 'public' folder
+app.use(express.static('public'));
 
 
-
-// Error Handler
+// Error Handler middleware
 app.use((err, req, res, next) => {
     console.error(err,stack);
     res.status(500).send('Something Broke');
@@ -306,19 +228,3 @@ app.use((err, req, res, next) => {
 app.listen(8080, function(req, res){
     console.log('Movie App is Running on Port 8080...')
 })
-
-// mongoose Querying functions
-// mongoose.model.deleteMany()
-// mongoose.model.deleteOne()
-// mongoose.model.find()
-// mongoose.model.findById()
-// mongoose.model.findByIdAndDelete()
-// mongoose.model.findByIdAndRemove()
-// mongoose.model.findByIdandUpdate()
-// mongoose.model.findOne()
-// mongoose.model.findOneAndDelete()
-// mongoose.model.fineOneAndRemove()
-// mongoose.model.findOneAndUpdate()
-// mongoose.model.replaceOne()
-// mongoose.model.updateMany()
-// mongoose.model.updateOne()
