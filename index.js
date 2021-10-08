@@ -1,8 +1,10 @@
 // required Modules
 const express = require('express');
 const bodyParser = require('body parser');
+const app = express();
 const uuid = require('uuid'),
 
+const morgan = require('morgan');
 // importing Models
 const mongoose = require('mongoose');
 const Models = require('./models.js');
@@ -10,15 +12,15 @@ const Models = require('./models.js');
 const Movies = Models.Movie;
 const Users = Models.User;
 const Directors = Models.Director;
-const Genre = Models.Genre;
+const Genres = Models.Genre;
 
-mongoose.connect('mongodb://localhost:27017/[LGBTQMovieApp]', { 
+mongoose.connect('mongodb://localhost:27017/LGBTQMovieApp', { 
 useNewUrlParser: true,
 useUnifiedTopology: true,
 });
 
-// express
-const app = express(); 
+// body-parser
+app.use(bodyParser.json());
 
 // morgan
 app.use(morgan('common'));
@@ -210,7 +212,7 @@ app.delete('/users/:Username', (req, res) => {
 });
     
 // exposing files in 'public' folder
-app.use(express.static('public'));
+app.use("/documentation", express.static('public'));
 
 
 // Error Handler middleware
@@ -220,6 +222,7 @@ app.use((err, req, res, next) => {
 });
 
 // Listen to requests
-app.listen(8080, function(req, res){
+app.listen(8080, () => 
     console.log('Movie App is Running on Port 8080...')
-})
+)
+
