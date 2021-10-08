@@ -2,7 +2,7 @@
 const express = require('express');
 const bodyParser = require('body parser');
 const app = express();
-const uuid = require('uuid'),
+const uuid = require('uuid');
 
 const morgan = require('morgan');
 // importing Models
