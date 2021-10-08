@@ -1,6 +1,5 @@
 // required Modules
 const express = require('express');
-const morgan = require('morgan');
 const bodyParser = require('body parser');
 const uuid = require('uuid'),
 
@@ -23,10 +22,6 @@ const app = express();
 
 // morgan
 app.use(morgan('common'));
-
-// body-parser
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: true}));
 
 // passport for authentication
 let auth = require('./auth')(app);
