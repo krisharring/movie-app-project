@@ -1,6 +1,6 @@
 // required Modules
 const express = require('express');
-const bodyParser = require('body parser');
+const bodyParser = require('body-parser');
 const app = express();
 const uuid = require('uuid');
 
@@ -14,7 +14,7 @@ const Users = Models.User;
 const Directors = Models.Director;
 const Genres = Models.Genre;
 
-mongoose.connect('mongodb://localhost:27017/LGBTQMovieApp', { 
+mongoose.connect('mongodb://localhost:27017/[LGBTQMovieApp]', { 
 useNewUrlParser: true,
 useUnifiedTopology: true,
 });
@@ -25,10 +25,10 @@ app.use(bodyParser.json());
 // morgan
 app.use(morgan('common'));
 
-// passport for authentication
-let auth = require('./auth')(app);
-const passport = require('passport');
-require('./passport');
+// // passport for authentication
+// let auth = require('./auth')(app);
+// const passport = require('passport');
+// require('./passport');
 
 
 // GET requests
@@ -51,7 +51,7 @@ app.get('/movies', (req, res) => {
 );
 
 // get a movie by title
-app.get('/movies/:Title', passport.authenticate('jwt', {session:false}), (req, res) => {
+app.get('/movies/:Title', (req, res) => {
     Movies.findOne({Title: req.params.Title})
     .then((movie) => {
         res.json(movie);
@@ -63,8 +63,8 @@ app.get('/movies/:Title', passport.authenticate('jwt', {session:false}), (req, r
 });
 
 // get a list of all genres
-app.get('/genres', passport.authenticate('jwt', {session:false}), (req, res) => {
-    Genre.find()
+app.get('/movies/:Genre', (req, res) => {
+    Genres.find()
     .then((genres) => {
         res.status(201).json(genres);
     })
@@ -75,8 +75,8 @@ app.get('/genres', passport.authenticate('jwt', {session:false}), (req, res) => 
 });
 
 // gets the description of all movie directors
-app.get('/directors/:Name', passport.authenticate('jwt', {session:fale}), (req, res) => {
-    Directors.findOne({Name: req.params.Name})
+app.get('/movies/:director', (req, res) => {
+    Directors.findOne({Director: req.params.Director})
     .then((director) => {
         res.json(director);
     })
@@ -174,7 +174,7 @@ app.post('/users/:Username/movies/:MovieID', (req, res) => {
             console.error(err);
             res.status(500).send('Error: ' + err);
         } else {
-            res.json(updatedUser);
+            res.json(updateUSer);
         }
     });
 });
@@ -190,7 +190,7 @@ app.delete('/users/:Username/movies/:MovieID', (req, res) => {
             console.error(err);
             res.status(500).send('Error: ' + err);
         } else {
-            res.json(updatedUser);
+            res.json(updateUSer);
         }
     });
 });
