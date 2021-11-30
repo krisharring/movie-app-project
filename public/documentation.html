@@ -1,170 +1,97 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
-    <head>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width" />
-        <title>Documentation</title>
-    </head>
-    <body>
-        <p>
-            Objective: To build the server-side component of a “movies” web application. The web
-            application will provide users with access to information about different
-            movies, directors, and genres. Users will be able to sign up, update their
-            personal information, and create a list of their favorite movies.
-        </p>
-        <p>
-            Who—Your immediate users will be frontend developers who’ll work on the client-side for the
-            application based on what’s been documented on the server-side (in this case, this developer
-            is also you!). You should also consider the users of the myFlix application. These will be
-            movie enthusiasts who enjoy reading information about different movies.
-            ● What—The complete server-side of your web application, including the server, business logic,
-            and business layers of the application. It will consist of a well-designed REST API and
-            architected database built using JavaScript, Node.js, Express, and MongoDB. The REST API
-            will be accessed via commonly used HTTP methods like GET and POST. Similar methods
-            (CRUD) will be used to retrieve data from your database and store that data in a non-relational
-            way.
-        <br>
-        <br>
-            ● When—Whenever users of LGBTQ Movie App are interacting with the application, the server-side of the
-            application will be in use, processing their requests and performing operations against the
-            data in the database. These users will be able to use the myFlix application whenever they like
-            to read information about different movies or update their user information, for instance, their
-            list of “Favorite Movies.”
-            ● Where—The application will be hosted online. The LGBTQ Movie application itself is responsive and
-            can therefore be used anywhere and on any device, giving all users the same experience.
-            ● Why—Movie enthusiasts want to be able to access information about different movies,
-            directors, and genres. The server-side of the myFlix application will ensure they have access
-            to this information, that their requests can be processed, and that all necessary data can be
-            stored.
-        </p>
-        <script type="module" src=" "></script>
-        <p>LIST OF URL ENDPOINTS
-            <br>
-            <br>
-            <b>Return a list of ALL movies to the user</b>
-            <br>
-            /movies
-            <br>
-            GET
-            <br>
-            A JSON object holding data about all the movies
-        </p>
+<html lang="en">
 
-        <p>
-            <br>
-            <b>Return data(description, genre, director, image URL, whether it's featured or not) about a single movie by title to the user
-            </b>
-            <br>
-            /movies/:Title
-            <br>
-            GET
-            <br>
-            A JSON object holding data about a single movie, containing an ID, title,genre, director property.
-                {
-                Id: 1,
-                Title: “Love Jones”,
-                Description: {
-                Genre: TBD,
-                Director: TBD,
-                Image URL:      TBD,
-                Featured: Y/N
-                }
-                }
-        </p>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/styles.css">
+    <title>udo_flix API</title>
+</head>
 
-        <p>
-            <br>
-            <b>Return data about a genre(description) by name/title
-            </b>
-            <br>
-            /movies/:Title/Genre
-            <br>
-            GET
-            <br>
-            A JSON object holding data about a genre
-        </p>
-
-        <p>
-            <br>
-            <b>Return data about a director by name
-            </b>
-            <br>
-            /movies/:Title/Director
-            <br>
-            GET
-            <br>
-            A JSON object holding data about the director
-        </p>
-
-        <p>
-            <br>
-            <b>Allow new users</b>
-            <br>
-            /users
-            <br>
-            POST
-            <br>
-            A JSON object holding data about the user being added
-            Example:<br>
-            {<br>
-                Name: "user1", <br>
-                Password: user123", <br>
-                Email: "useremail@gmail.com", <br>
+<body>
+<table>
+    <thead>
+        <tr>
+            <th>HTTP Method</th>
+            <th>Request</th>
+            <th>URL</th>
+            <th>Request body data format</th>
+            <th>Response body data format</th>
+        </tr>
+    </thead>
+        <tbody>
+            <tr>
+                <td>GET</td>
+                <td>Get all movie lists</td>
+                <td>'/movies'</td>
+                <td>None</td>
+                <td>Get data array of all movie lists in JSON format</td>
+            </tr>
+            <tr>
+                <td>GET</td>
+                <td>Get data about a single movie title</td>
+                <td>'/movies/:title'</td>
+                <td>None</td>
+                <td>Get an array of a single movie data in JSON format, based on title entered in the URL parameter. Example: {
+            title: 'Lupin',
+            director: ['Louis Leterrier',  'Marcela Said'],
+            genre: ['Crime', 'Thriller', 'Mystery', 'Drama'],
+            releaseYear: 2021
             }
-        </p>
+                </td>    
+            </tr>
+            <tr>
+                <td>GET</td>
+                <td>Get movie by genre</td>
+                <td>'/movies/genre/:title'</td>
+                <td>None</td>
+                <td>Get an array of movie by genre in JSON format</td>
+            </tr>
+            <tr>
+                <td>GET</td>
+                <td>Get movie director name</td>
+                <td>'/movies/director/:name'</td>
+                <td>None</td>
+                <td>Get an array of a movie director data in JSON format, based on the director entered in the URL parameter </td>
+            </tr>
+            <tr>
+                <td>POST</td>
+                <td>Allow clients to create account</td>
+                <td>'/users'</td>
+                <td>Clients' user information added to the server in a JSON format  style</td>
+                <td>A JSON format of the client's added information, included with a unique id and an extra successproof message  </td>
+            </tr>
+            <tr>
+                <td>PUT</td>
+                <td>Allow clients to update their client info</td>
+                <td>'/users/:username'</td>
+                <td>None</td>
+                <td>A JSON format data with the updated result</td>
+            </tr>
+            <tr>
+                <td>POST</td>
+                <td>Allow clients to add their favourite movies to their library</td>
+                <td>'/users/:username/movies/:movieId'</td>
+                <td>A unique id of the favorite movie will be added to the users list. Example:"/users/'Tony'/movies/:619aab110bb457bf0b0afda4" </td>
+                <td>An array of the users data in JSON format, and an added unique movieid. Example: "username": "Tony", "email": "tony@gmail.com", "favoriteMovie": "619aab110bb457bf0b0afda4" </td>
+            </tr>
+            <tr>
+                <td>DELETE</td>
+                <td>Allow clients to remove a movie from their list of favorites</td>
+                <td>'/users/:username/movies/:movieId'</td>
+                <td>None</td>
+                <td>Returns an empty array of favoriteMovie object or an array with an ommitted movieid that was deleted</td>
+            </tr>
+            <tr>
+                <td>DELETE</td>
+                <td>Allow clients to terminate account</td>
+                <td>'/users'</td>
+                <td>None</td>
+                <td>Returns a text confirming account termination</td>
+            </tr>
+        </tbody>
+    </table>
+</body>
 
-        <p>
-            <br>
-            <b>Allow users to update their user info(username)</b>
-            <br>
-            /users/[ID]/:Name
-            <br>
-            PUT
-            <br>
-            A JSON object holding data about the user being added
-            Example:<br>
-            {<br>
-                Name: "user1", <br>
-                Password: user123", <br>
-                Email: "useremail@gmail.com", <br>
-                MovieList: [], <br>
-            }
-        </p>
-
-        <p>
-            <br>
-            <b>Allow users to add a movie to their list of favorites(showing only a text that a movie has been added</b>
-            <br>
-            /users/:Name/Movies/:MovieID
-            <br>
-            POST
-            <br>
-            A JSON file with MovieID as the value of MovieList<br>
-        </p>
-
-        <p>
-            <br>
-            <b>Allow users to remove a movie from their list of favorites(showing only a test that a movie has been removed
-            </b>
-            <br>
-            /users/:Name/movies/:MovieID
-            <br>
-            DELETE
-            <br>
-            A text message indicating the movie was successfully removed
-        </p>
-
-        <p>
-            <br>
-            <b>Allow existing users to deregister(showing only a test that a user email has been removed
-            </b>
-            <br>
-            /users/:UserID
-            <br>
-            DELETE
-            <br>
-            A text message indicating the user was successfully removed
-        </p>
-
-    </body>
 </html>
